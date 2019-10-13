@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weizeliang.cms.dao.CommentMapper" >
+
+	<resultMap type="comment" id="commentResultMap">
+	<id column="id" property="id"/>
+	
+	<result column="content" property="content"/>
+	<result column="created" property="created"/>
+	
+	<!-- user -->
+	<association property="user" javaType="user" 
+	select="com.weizeliang.cms.dao.UserMapper.selectByPrimaryKey" column="user_id"> </association>
+	
+	</resultMap>
+
+
+
+	<select id="selects" resultMap="commentResultMap">
+	
+		 select c.* from cms_comment c left join cms_user u on c.user_id =u.id
+		where article_id =#{articleId}
+		
+		order by c.created desc
+	
+	</select>
+
+
+	<!-- 增加评论 -->
+	<insert id="insert" >
+		insert into cms_comment (user_id,article_id,content,created) values(
+		#{user.id},#{article.id},#{content},#{created})
+	
+	
+	</insert>
+	
+	<!-- 删除评论 -->
+	<delete id="delete">
+		delete from cms_comment where id=#{id}
+	</delete>
+
+</mapper>
